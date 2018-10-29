@@ -58,7 +58,7 @@ def pkg_get(pkgname):
     try:
         package = model.Package.by_name(ft.SESSION, pkgname)
         output = package.__json__(ft.SESSION)
-    except NoResultFound, err:
+    except NoResultFound as err:
         ft.SESSION.rollback()
         output['output'] = 'notok'
         output['error'] = 'Package "%s" not found' % pkgname
@@ -76,7 +76,7 @@ def pkg_get_tag(pkgname):
     try:
         package = model.Package.by_name(ft.SESSION, pkgname)
         output = package.__tag_json__()
-    except NoResultFound, err:
+    except NoResultFound as err:
         ft.SESSION.rollback()
         output['output'] = 'notok'
         output['error'] = 'Package "%s" not found' % pkgname
@@ -101,7 +101,7 @@ def pkg_get_usage(pkgname):
         else:
             package = model.Package.by_name(ft.SESSION, pkgname)
             output = package.__usage_json__(ft.SESSION)
-    except NoResultFound, err:
+    except NoResultFound as err:
         ft.SESSION.rollback()
         output['output'] = 'notok'
         output['error'] = 'Package "%s" not found' % pkgname
@@ -126,7 +126,7 @@ def pkg_get_rating(pkgname):
         else:
             package = model.Package.by_name(ft.SESSION, pkgname)
             output = package.__rating_json__(ft.SESSION)
-    except NoResultFound, err:
+    except NoResultFound as err:
         ft.SESSION.rollback()
         output['output'] = 'notok'
         output['error'] = 'Package "%s" not found' % pkgname
@@ -149,7 +149,7 @@ def tag_pkg_get(tag):
             raise NoResultFound()
         output = {'tag': tag}
         output['packages'] = [pkg.__pkg_json__() for pkg in package]
-    except NoResultFound, err:
+    except NoResultFound as err:
         ft.SESSION.rollback()
         output['output'] = 'notok'
         output['error'] = 'Tag "%s" not found' % tag
@@ -183,17 +183,17 @@ def tag_pkg_put(pkgname):
             output['output'] = 'ok'
             output['messages'] = messages
             output['user'] = flask.g.fas_user.__json__()
-        except NoResultFound, err:
+        except NoResultFound as err:
             ft.SESSION.rollback()
             output['output'] = 'notok'
             output['error'] = 'Package "%s" not found' % pkgname
             httpcode = 404
-        except IntegrityError, err:
+        except IntegrityError as err:
             ft.SESSION.rollback()
             output['output'] = 'notok'
             output['error'] = 'This tag is already associated to this package'
             httpcode = 500
-        except ValueError, err:
+        except ValueError as err:
             ft.SESSION.rollback()
             output['output'] = 'notok'
             output['error'] = str(err)
@@ -227,12 +227,12 @@ def rating_pkg_get(rating):
             raise NoResultFound()
         output = {'rating': rating}
         output['packages'] = [package.name for package in packages]
-    except ValueError, err:
+    except ValueError as err:
         ft.SESSION.rollback()
         output['output'] = 'notok'
         output['error'] = 'Invalid rating provided "%s"' % rating
         httpcode = 500
-    except NoResultFound, err:
+    except NoResultFound as err:
         ft.SESSION.rollback()
         output['output'] = 'notok'
         output['error'] = 'No packages found with rating "%s"' % rating
@@ -258,7 +258,7 @@ def rating_pkg_put(pkgname):
             output['output'] = 'ok'
             output['messages'] = [message]
             output['user'] = flask.g.fas_user.__json__()
-        except NoResultFound, err:
+        except NoResultFound as err:
             ft.SESSION.rollback()
             output['output'] = 'notok'
             output['error'] = 'Package "%s" not found' % pkgname
@@ -329,7 +329,7 @@ def usage_pkg_put(pkgname):
             output['output'] = 'ok'
             output['messages'] = [message]
             output['user'] = flask.g.fas_user.__json__()
-        except NoResultFound, err:
+        except NoResultFound as err:
             ft.SESSION.rollback()
             output['output'] = 'notok'
             output['error'] = 'Package "%s" not found' % pkgname
@@ -372,7 +372,7 @@ def vote_pkg_put(pkgname):
             output['messages'] = [message]
             output['user'] = flask.g.fas_user.__json__()
             output['tag'] = tagobj.__json__()
-        except fedoratagger.lib.TaggerapiException, err:
+        except fedoratagger.lib.TaggerapiException as err:
             output['output'] = 'notok'
             output['error'] = err.message
             httpcode = 500
@@ -401,7 +401,7 @@ def statistics_by_user_get(username, fields="all"):
         user = model.FASUser.by_name(ft.SESSION, username)
         output = fedoratagger.lib.statistics_by_user(ft.SESSION,
                                                      user, fields)
-    except NoResultFound, err:
+    except NoResultFound as err:
         ft.SESSION.rollback()
         output['output'] = 'notok'
         output['error'] = 'User "%s" not found' % username
@@ -691,7 +691,7 @@ def score(username):
 
     try:
         output = fedoratagger.lib.score(ft.SESSION, username)
-    except NoResultFound, err:
+    except NoResultFound as err:
         httpcode = 404
         output['output'] = 'notok'
         output['error'] = 'User not found'

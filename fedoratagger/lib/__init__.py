@@ -160,7 +160,7 @@ def add_vote(session, pkgname, tag, vote, user):
     try:
         package = model.Package.by_name(session, pkgname)
         tagobj = model.Tag.get(session, package.id, tag)
-    except NoResultFound, err:
+    except NoResultFound as err:
         raise TaggerapiException('This tag could not be found associated'
                                  ' to this package')
     verb = 'changed'

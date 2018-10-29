@@ -21,6 +21,7 @@
 '''
 fedoratagger tests.
 '''
+from __future__ import print_function
 
 __requires__ = ['SQLAlchemy >= 0.7']
 import pkg_resources
@@ -48,7 +49,7 @@ try:
     req = requests.get('%s/new' % FAITOUT_URL)
     if req.status_code == 200:
         DB_URL = req.text
-        print 'Using faitout at: %s' % DB_URL
+        print('Using faitout at: %s' % DB_URL)
 except:
     pass
 
@@ -73,7 +74,7 @@ class Modeltests(unittest.TestCase):
             engine = create_engine(DB_URL)
             model.DeclarativeBase.metadata.drop_all(engine)
         except Exception as e:
-            print "Failed dropping tables %r" % e
+            print("Failed dropping tables %r" % e)
 
         if os.path.exists(DB_URL):
             os.unlink(DB_URL)

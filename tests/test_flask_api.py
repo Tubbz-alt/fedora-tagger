@@ -686,8 +686,7 @@ class Flasktests(Modeltests):
         output = self.app.get('/api/v1/random/')
         self.assertEqual(output.status_code, 200)
         output = json.loads(output.data)
-        keys = output.keys()
-        keys.sort()
+        keys = sorted(output.keys())
         self.assertEqual(set(output.keys()), set([
             'rating', 'summary', 'name', 'tags', 'usage', 'icon',
         ]))

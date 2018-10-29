@@ -18,6 +18,7 @@
 # Refer to the README.rst and LICENSE files for full details of the license
 # -*- coding: utf-8 -*-
 """The application's model objects"""
+from __future__ import print_function
 
 import json
 import os
@@ -127,8 +128,8 @@ class Package(DeclarativeBase):
                 session.add(self)
                 session.commit()
             except Exception as e:
-                print "Failed to get meta: %r from fedora-packages" % self.name
-                print str(e)
+                print("Failed to get meta: %r from fedora-packages" % self.name)
+                print(str(e))
 
         return meta
 

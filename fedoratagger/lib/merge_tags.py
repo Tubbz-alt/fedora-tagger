@@ -8,6 +8,7 @@ or
 
 FEDORATAGGER_CONFIG = /etc/fedora-tagger/fedora-tagger.cfg fedoratagger-merge-tag -b y
 """
+from __future__ import print_function
 
 import argparse
 
@@ -23,7 +24,7 @@ from sqlalchemy import and_
 
 def process_values():
 
-    print "Finding duplicate values....."
+    print("Finding duplicate values.....")
 
     rows = ft.SESSION.query(func.min(m.Tag.id).label("id"), m.Tag.package_id,\
                             func.lower(m.Tag.label).label("label"),\
@@ -34,7 +35,7 @@ def process_values():
     total = len(rows)
     c = 1
     for r in rows:
-        print "[%i- %i] --> Merge values ### [Tag.id %i]" % (c, total, r.id)
+        print("[%i- %i] --> Merge values ### [Tag.id %i]" % (c, total, r.id))
         c += 1
         update = ft.SESSION.query(m.Tag).filter(m.Tag.id==r.id)
         update.update(
@@ -43,7 +44,7 @@ def process_values():
                        }, synchronize_session='fetch'
                      )
 
-        print "-----Deleting duplicate values.."
+        print("-----Deleting duplicate values..")
 
         duplicate = ft.SESSION.query(m.Tag.id, m.Tag.label).\
                        filter(and_(m.Tag.id != r.id,
@@ -67,13 +68,13 @@ def process_values():
 
         ft.SESSION.commit()
 
-    print "Converting tags to lower-case..."
+    print("Converting tags to lower-case...")
     lowercase = ft.SESSION.query(m.Tag).all()
     total = len(lowercase)
     c = 1
     for l in lowercase:
         to = func.lower(l.label)
-        print "[%i - %i] -- [%s]" % (c, total, l.label)
+        print("[%i - %i] -- [%s]" % (c, total, l.label))
         c += 1
         l.label = func.lower(l.label)
 
@@ -83,7 +84,7 @@ def process_values():
 
 def create_backup():
     try:
-        print "Creating backup of table."
+        print("Creating backup of table.")
         engine.execute("CREATE TABLE bk_tag AS Select * from tag")
         ft.SESSION.commit()
         return True
@@ -104,10 +105,10 @@ def main():
         if create_backup():
             process_values()
         else:
-            print "Unable to create backup."
+            print("Unable to create backup.")
     else:
         process_values()
 
 if __name__ == '__main__':
     main()
-    print "Finish.."
+    print("Finish..")
